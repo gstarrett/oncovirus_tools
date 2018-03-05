@@ -1,0 +1,24 @@
+mutualExclusivity <- function(x) {
+	myOut <- data.frame(OR=double(),p.value=double())
+	for (i in 1:nrow(x)) {
+		for (j in 1:nrow(x)) {
+			mymat = matrix(0,2,2)
+			for (k in 1:ncol(x)) {
+				if (sum(x[c(i,j),k]) == 2) {
+					mymat[1,1] <- mymat[1,1]+1
+				} elsif (x[j,k] == 1) {
+					mymat[2,1] <- mymat[2,1]+1
+				} elsif (x[i,k] == 1) {
+					mymat[1,2] <- mymat[1,2]+1
+				} else {
+					mymat[2,2] <- mymat[2,2]+1
+				}
+			}
+			pvalue <- fisher.test(mymat)$p.value
+			OR <- log((mymat[2,2]*mymat[1,1])/(mymat[1,2]*mymat[2,1]))
+			comparison <- paste(rownames(x[i,,drop=F]), rownames(x[j,,drop=F]), sep=".")
+			myOut[comparison,] <- c(OR, pvalue)
+		}
+	}
+	return(myOut)
+}
