@@ -3,21 +3,30 @@ mutualExclusivity <- function(x) {
 	for (i in 1:nrow(x)) {
 		for (j in 1:nrow(x)) {
 			mymat = matrix(0,2,2)
-			for (k in 1:ncol(x)) {
-				if (sum(x[c(i,j),k]) == 2) {
-					mymat[1,1] <- mymat[1,1]+1
-				} elsif (x[j,k] == 1) {
-					mymat[2,1] <- mymat[2,1]+1
-				} elsif (x[i,k] == 1) {
-					mymat[1,2] <- mymat[1,2]+1
-				} else {
-					mymat[2,2] <- mymat[2,2]+1
+			gene1 <- rownames(x[i,,drop=F])[1]
+			gene2 <- rownames(x[j,,drop=F])[1]
+			if (gene1 != gene2) {
+			genes <- c(gene1, gene2)
+			comparison <- paste(genes[order(genes)], collapse=".")
+			message(paste("Comparing",comparison,"..."))
+			if(!(comparison %in% myOut[comparison,])) {
+				for (k in 1:ncol(x)) {
+				message(colnames(x[,k,drop=F]))
+					if (sum(x[c(i,j),k]) == 2) {
+						mymat[1,1] <- mymat[1,1]+1
+					} else if (x[j,k] == 1) {
+						mymat[2,1] <- mymat[2,1]+1
+					} else if (x[i,k] == 1) {
+						mymat[1,2] <- mymat[1,2]+1
+					} else {
+						mymat[2,2] <- mymat[2,2]+1
+					}
+				}
+				pvalue <- fisher.test(mymat)$p.value
+				OR <- log((mymat[2,2]*mymat[1,1])/(mymat[1,2]*mymat[2,1]))
+				myOut[comparison,] <- c(OR, pvalue)
 				}
 			}
-			pvalue <- fisher.test(mymat)$p.value
-			OR <- log((mymat[2,2]*mymat[1,1])/(mymat[1,2]*mymat[2,1]))
-			comparison <- paste(rownames(x[i,,drop=F]), rownames(x[j,,drop=F]), sep=".")
-			myOut[comparison,] <- c(OR, pvalue)
 		}
 	}
 	return(myOut)
