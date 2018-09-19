@@ -25,12 +25,15 @@ while (<SAM>) {
   print FQ "@" . $f[0] . "-" . $f[2] . ":" . $f[3] . "\n" . $f[9] . "\n+\n" . $f[10] . "\n";
 }
 
+print SUM join("\t","#filename","chromosome","1st_quartile_pos","2nd_quartile_pos","3rd_quartile_pos","interquartile_range","1st_quartile_read_count","3rd_quartile_read_count","total_viral_pairs_on_chromosome"),"\n";
+
 for my $key (sort keys %intHash) {
   my $modal = mode($intHash{$key});
   my @qrts =  &quartiles($intHash{$key});
   my $q1Cnt = &count($intHash{$key}, $qrts[0]);
   my $q3Cnt = &count($intHash{$key}, $qrts[2]);
-  print SUM join("\t", $in, $key, median($intHash{$key}), stddev($intHash{$key}), @qrts, $q1Cnt, $q3Cnt, scalar(@{$intHash{$key}}), $modal->is_multimodal), "\n";
+  print SUM join("\t", $in, $key, @qrts, $q1Cnt, $q3Cnt, scalar(@{$intHash{$key}})), "\n";
+  #print SUM join("\t", $in, $key, median($intHash{$key}), stddev($intHash{$key}), @qrts, $q1Cnt, $q3Cnt, scalar(@{$intHash{$key}}), $modal->is_multimodal), "\n";
 }
 
 close(SAM);
