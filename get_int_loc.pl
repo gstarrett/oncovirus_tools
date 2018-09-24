@@ -6,6 +6,7 @@ my $in = shift;
 my $virus = shift;
 chomp($virus);
 my %intHash;
+my %virHash;
 
 open(SAM, "samtools view $in |");
 open(OUT, "> $in.$virus.txt");
@@ -18,6 +19,7 @@ while (<SAM>) {
   if ($f[2] eq $virus) {
     if ($f[6] ne "=") {
       push(@{$intHash{$f[6]}}, $f[7]);
+      push(@{$virHash{$f[6]}}, $f[3]);
     }
   } elsif ($f[6] eq $virus) {
     print OUT join("\t", $in, @f[2,3]), "\n";
@@ -25,14 +27,14 @@ while (<SAM>) {
   print FQ "@" . $f[0] . "-" . $f[2] . ":" . $f[3] . "\n" . $f[9] . "\n+\n" . $f[10] . "\n";
 }
 
-print SUM join("\t","#filename","chromosome","1st_quartile_pos","2nd_quartile_pos","3rd_quartile_pos","interquartile_range","1st_quartile_read_count","3rd_quartile_read_count","total_viral_pairs_on_chromosome"),"\n";
+print SUM join("\t","#filename","chromosome","1st_quartile_pos","2nd_quartile_pos","3rd_quartile_pos","interquartile_range","1st_quartile_read_count","3rd_quartile_read_count","total_viral_pairs_on_chromosome","virus_1st_quartile_pos","virus_2nd_quartile_pos","virus_3rd_quartile_pos","virus_interquartile_range"),"\n";
 
 for my $key (sort keys %intHash) {
-  my $modal = mode($intHash{$key});
   my @qrts =  &quartiles($intHash{$key});
   my $q1Cnt = &count($intHash{$key}, $qrts[0]);
   my $q3Cnt = &count($intHash{$key}, $qrts[2]);
-  print SUM join("\t", $in, $key, @qrts, $q1Cnt, $q3Cnt, scalar(@{$intHash{$key}})), "\n";
+  my @virQrts =  &quartiles($virHash{$key});
+  print SUM join("\t", $in, $key, @qrts, $q1Cnt, $q3Cnt, scalar(@{$intHash{$key}}),@virQrts), "\n";
   #print SUM join("\t", $in, $key, median($intHash{$key}), stddev($intHash{$key}), @qrts, $q1Cnt, $q3Cnt, scalar(@{$intHash{$key}}), $modal->is_multimodal), "\n";
 }
 
