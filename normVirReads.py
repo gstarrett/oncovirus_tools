@@ -7,8 +7,12 @@ args = parser.parse_args()
 
 # this can be simplified by just importing the bam file and then running bedtools and bamindexstat then processing those outputs
 
-chroms  = list(range(1, 22))
-chroms.extend(["X","Y","MT"])
+nums  = list(range(1, 23))
+chroms = ["chr" + str(num) for num in nums]
+chroms.extend(["chrX","chrY","chrM","X","Y","M","MT"])
+chroms.extend(str(num) for num in nums)
+
+print(chroms)
 
 huReads = 0
 
@@ -19,7 +23,7 @@ ext = path[-1].split(".")
 with open(args.s) as statFH:
   for line in statFH:
     f = line.split()
-    if f[0] in chroms:
+    if str(f[0]) in chroms:
         huReads += int(f[4])
 
 cov = 0
