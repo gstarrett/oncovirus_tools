@@ -1,4 +1,4 @@
-# Oncovirus Tools
+![logo](https://github.com/gstarrett/oncovirus_tools/blob/master/oncovirus_tools.png)  
 *In progress*  
 Suite of tools for the analysis of viruses involved in cancer with a specific focus on understanding the attributes of integrated viruses.
 
