@@ -8,12 +8,12 @@ use Text::Levenshtein qw(distance);
 use Bio::Perl;
 use Data::Dumper;
 
-my $makeblastdb = "/Users/starrettgj/soft/ncbi-blast-2.6.0+/bin/makeblastdb";
+my $makeblastdb = qx(which makeblastdb);
 
 my $in = shift;
 my $virus = shift;
 my $ref = shift;
-my $k = 31;
+my $k = 32;
 my $timestamp = time();
 chomp($virus);
 my %intHash;
@@ -153,8 +153,8 @@ my $spades_out = $in . "_$timestamp" . "_spades";
 my $spades_opt = "-t 4";
 system("spades.py -s $in.$virus.$timestamp.fastq -o $spades_out $spades_opt");
 
-#BLAST:
-#$spades_out = shift;
+# BLAST:
+# $spades_out = shift;
 # write out saved merge fasta and create blat reference
 system("$makeblastdb -in $ref -dbtype nucl -out $spades_out/tmpblastdb");
 # blat contigs against human virus references
