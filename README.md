@@ -3,7 +3,7 @@
 Suite of tools for the analysis of viruses involved in cancer with a specific focus on understanding the attributes of integrated viruses.
 
 ## Workflow
-1. Align reads to reference genome containing host and viral sequences using software such as bowtie2 or bwa that will generate a bam file
+1. Align reads to reference genome containing host and/or viral sequences using software such as bowtie2 or bwa that will generate a bam file
 2. Input bam file and reference fasta into `get_int_loc.pl`
    * `get_int_loc.pl` will also output a fastq file of all viral sequence containing pairs and will assemble these using SPAdes
    * `normVirReads.py` can be used at this step to normalize the viral coverage or "copy number" relative to the remaining viral genome (in case of large deletions) and the number of human reads
@@ -16,6 +16,7 @@ Suite of tools for the analysis of viruses involved in cancer with a specific fo
 ## Requirements
 * SPAdes
 * samtools
+* bedtools
 ### Perl modules
 * Bio::DB::FASTA
 * Text::Levenshtein
