@@ -34,20 +34,26 @@ Suite of tools for the analysis of viruses involved in cancer with a specific fo
 ### bootstrap_locations.pl
 Randomly get 1000 human chromosomal locations.
 ### bootstrap_microhomology.pl
-Randomly get 1000  human and virus integration pairs and calculate the degree of microhomology
+Randomly get 1000 human and virus integration pairs and calculate the degree of microhomology
 ### annotate_fastg.pl
-Annotate the fastg data in a tabular format based on given reference sequences using BLAST.
+`perl annotate_fastg.pl input.fastg.txt input.blastn.txt > input.fastg.ann.txt`
+Annotate the fastg data in a tabular format based on given reference sequences using BLAST (blast output is generated from get_int_loc.pl).
 ### draw_fastg.pl
+`perl draw_fastg.pl input.fastg > input.fastg.txt`
 Make a tabular text file that can be further annotated or plotted using R.
 ### get_break_seqs.pl
+`perl get_break_seqs.pl input.int.txt`
 Get the viral and host sequences overlapping "break" or viral integration sites to assess microhomology and other features.
 ### get_int_loc.pl
+`perl get_int_loc.pl input.bam "virus_contig_name" ref.fa`
 Find the likely integration sites of a particular virus in a host genome while extracting all read pairs containing viral sequences identified by a bloom filter built on 32bp k-mers based on the viral reference sequence.
 ### integration_cnvs.pl
 Coming soon.
 ### mutual_exclusivity.R
 R script that calculated mutual exclusivity/co-occurence from an input matrix, such as for somatic alterations in genes (rows) by patient/sample (columns)
 ### normVirReads.py
+`python normVirReads.py input.virus.bedgraph input.bamindexstats.txt`
 Calculate the fraction of viral genome bases covered and normalize the coverage based on these values as well as number of human reads.
 ### plot_annotated_fastg.pl
+`perl plot_annotated_fastg.pl input.fastg.ann.txt`
 Make the pdf file containing the ggraph network plot of fastg data
