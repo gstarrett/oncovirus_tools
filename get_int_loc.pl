@@ -9,6 +9,7 @@ use Bio::Perl;
 use Data::Dumper;
 
 my $makeblastdb = qx(which makeblastdb);
+chomp($makeblastdb);
 
 my $in = shift;
 my $virus = shift;
