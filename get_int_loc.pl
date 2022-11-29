@@ -112,7 +112,7 @@ close(SAM);
 close(OUT);
 # close(FQ);
 
-open(MERGE, "bedtools merge -s -i $in.$virus.$timestamp.bedpe -c 7,8,9 -o count,min,max |");
+open(MERGE, "bedtools merge -s -i $in.$virus.$timestamp.bedpe -c 6,7,8,9 -o distinct,count,min,max |");
 while (<MERGE>) {
   chomp($_);
   my @f = split("\t",$_);
