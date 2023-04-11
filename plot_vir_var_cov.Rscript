@@ -1,0 +1,26 @@
+#!/usr/bin/env Rscript
+
+## Usage: Rscript plot_vir_var_cov.Rscript <bedgraph coverage file of virus> <variant counts files> <optional: output name>
+
+args = commandArgs(trailingOnly=TRUE)
+# test if there is at least one argument: if not, return an error
+if (length(args)<1) {
+  stop("At least two argument must be supplied (input file).n", call.=FALSE)
+} else if (length(args)==2) {
+  # default output file
+  args[3] = paste0(args[1],".pdf")
+}
+
+library("ggplot2")
+
+maxLen=5400 # length of the MCPyV genome. Adjust if needing to plot another virus
+
+df = read.table(args[1], header=F, sep="\t")
+df.variants = read.table(args[2], header=F, sep="\t")
+
+coef = max(df$V4) # get the maximum value of coverage to adjust allele frequency plot heights
+pdf(args[3], width=16, height=3)
+
+ggplot(df) + geom_rect(aes(xmin=V2,xmax=V3,ymin=0,ymax=V4)) + geom_point(data=df.variants, aes(x=V2, y=V17*coef, color=V6), size=2) + geom_segment(data=df.variants, aes(x=V2, xend=V2, y=V17*coef, yend=0, color=V6)) + theme_classic() + scale_color_manual(values = c("dodgerblue","black","red","grey60","forestgreen","lightpink")) + xlim(0,maxLen) + scale_y_continuous(name="Depth of Coverage", sec.axis=sec_axis(~./coef, name="Allele Frequency")) + labs(x = "Position (bp)", color="Substitution")
+
+dev.off()
