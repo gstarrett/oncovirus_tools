@@ -18,6 +18,19 @@ path = args.s.split("/")
 ext = path[-1].split(".")
 lengths = {}
 # stat file for human reads
+virDict = {}
+
+with open(args.g) as covFH:
+    for line in covFH:
+        f = line.split()
+        if str(f[0]) in virDict:
+            if int(f[3])>0:
+                virDict[str(f[0])][0] += int(f[3]) * (int(f[2]) - int(f[1]))
+                virDict[str(f[0])][1] += int(f[2]) - int(f[1])
+        else:
+            if int(f[3])>0:
+                virDict.update({str(f[0]): [int(f[3]) * (int(f[2]) - int(f[1])), int(f[2]) - int(f[1]), 0]})
+
 with open(args.s) as statFH:
     for line in statFH:
         f = line.split()
@@ -25,25 +38,19 @@ with open(args.s) as statFH:
             huReads += int(f[4])
         elif str(f[0]) != 'NoCoordinateCount=':
             lengths.update({str(f[0]): int(f[2])})
+            if str(f[0]) in virDict:
+                virDict[str(f[0])][2] = int(f[4])
 
 # mcpyv.cov file for coverage of virus
-virDict = {}
-with open(args.g) as covFH:
-    for line in covFH:
-        f = line.split()
-        if str(f[0]) in virDict:
-            virDict[str(f[0])][0] += int(f[3])
-            virDict[str(f[0])][1] += int(f[2]) - int(f[1])
-        else:
-            virDict.update({str(f[0]): [int(f[3]), int(f[2]) - int(f[1])]})
 
 for key in virDict:
-    cov = virDict[key][0]
+    weightedCov = virDict[key][0]
     bases = virDict[key][1]
-    if (cov > 0):
-        avgCov = cov/bases
+    reads= virDict[key][2]
+    if (weightedCov > 0):
+        avgCov = weightedCov/bases
     else:
         avgCov = 0
     normCp = (avgCov) / (huReads/1000)
     # viral genome coverage per 1000 human reads
-    print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(key, ext[0], normCp, huReads, bases, avgCov, cov, lengths[key]))
+    print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(key, ext[0], normCp, huReads, bases, avgCov, reads, lengths[key]))
