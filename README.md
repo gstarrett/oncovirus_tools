@@ -61,7 +61,7 @@ R script that calculated mutual exclusivity/co-occurence from an input matrix, s
 Example commands to generate the needed input
 ```
 java -jar picard.jar BamIndexStats I=input.bam > input.stats.txt
-samtools view -b input.bam 'virus' | bedtools genomecov -bg -ibam stdin > input.virus.bedgraph`
+samtools view -b input.bam 'virus' | bedtools genomecov -bg -split -ibam stdin > input.virus.bedgraph`
 ```
 Calculate the fraction of viral genome bases covered and normalize the coverage based on these values as well as number of human reads.
 ### plot_annotated_fastg.pl
@@ -107,7 +107,7 @@ perl plot_annotated_fastg.pl MCC000_spades/assembly_graph.fastg.ann.txt
 
 ```
 java -jar picard.jar BamIndexStats I=MCC000.bam > MCC000.stats.txt
-samtools view -b MCC000.bam 'MCPyV' | bedtools genomecov -bg -ibam stdin > MCC000.MCPyV.bedgraph
+samtools view -b MCC000.bam 'MCPyV' | bedtools genomecov -bg -split -ibam stdin > MCC000.MCPyV.bedgraph
 python normVirReads.py MCC000.MCPyV.bedgraph MCC000.stats.txt
 ```
 <p>Summary file contains the following columns in this order:</p>
